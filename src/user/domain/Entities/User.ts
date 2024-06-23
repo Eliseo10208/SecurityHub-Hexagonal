@@ -1,11 +1,11 @@
-export class User{
-    constructor (
-        readonly id:number,
-        readonly name:string,
-        readonly lastName:string,
-        readonly mail:string,
-        readonly password:string, 
-        readonly phone:number,
-        readonly home:number,
-    ){}
+export class User {
+    constructor(
+        readonly idUser: number,
+        readonly name: string,
+        readonly lastName: string,
+        readonly mail: string,
+        readonly phone: number,
+        readonly password: string,
+        readonly home: number
+    ) {}
 }
