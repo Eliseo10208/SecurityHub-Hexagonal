@@ -1,33 +1,17 @@
+import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
-import mysql from 'mysql2/promise';
-import { Signale } from 'signale';
 
 dotenv.config();
-const signale = new Signale();
 
-const config = {
+export const sequelize = new Sequelize(
+  process.env.DB_NAME!, 
+  process.env.DB_USERNAME!, 
+  process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASSWORD,
-    waitForConnections: true,
-    connectionLimit: 10,
-}
+    dialect: 'mysql',
+    port: parseInt(process.env.DB_PORT || '3306')
+});
 
-//Crear el pool de conexiones 
-
-const pool = mysql.createPool(config);
-
-export async function query(sql: string, params: any[]){
-    try{
-        const conn = await pool.getConnection();
-        signale.success("Conexion existosa a la BD");
-        const result =  await conn.execute(sql, params);
-        conn.release();
-        return result;
-    } catch(error){
-        signale.error(error);
-        console.log('Se ha producido  un error')
-        return null;
-    }
-}
+sequelize.authenticate()
+  .then(() => console.log('Connection has been established successfully.'))
+  .catch(err => console.error('Unable to connect to the database:', err));

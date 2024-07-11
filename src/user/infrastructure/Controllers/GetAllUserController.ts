@@ -1,39 +1,18 @@
-import { Request, Response } from "express";
-
-import { GetAllUserUserUseCase } from "../../application/MethodsUser/GetAllUserUseCase";
+import { Request, Response } from 'express';
+import { GetAllUserUseCase } from '../../application/MethodsUser/GetAllUserUseCase';
 
 export class GetAllUserController {
-    constructor(readonly getAllUserUseCase: GetAllUserUserUseCase) {}
-    async run(req: Request, res: Response): Promise<void> {
-        try {
-            const user = await this.getAllUserUseCase.run();
-            console.log(user);
-            if (user)
-                res.status(200).send({
-                    status: "success",
-                    data: user.map((user: any) => {
-                        return {
-                            idUser: user?.idUser,
-                            name: user?.name,
-                            lastName: user?.lastName,
-                            mail: user?.mail,
-                            phone: user?.phone,
-                            password: user?.password,
-                            home: user?.home,
-                        };
-                    }),
-                });
-            else
-                res.status(400).send({
-                    status: "error",
-                    msn: "Hubo un problema",
-                });
-        } catch (error) {
-            res.status(204).send({
-                status: "error",
-                data: "Hubo un problema",
-                msn: error,
-            });
-        }
+  constructor(private getAllUserUseCase: GetAllUserUseCase) {}
+
+  async handle(req: Request, res: Response): Promise<Response> {
+    try {
+      const users = await this.getAllUserUseCase.execute();
+      return res.status(200).json(users);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(400).json({ message: 'An unexpected error occurred' });
     }
+  }
 }

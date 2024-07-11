@@ -1,11 +1,12 @@
 export class User {
     constructor(
-        readonly idUser: number,
-        readonly name: string,
-        readonly lastName: string,
-        readonly mail: string,
-        readonly phone: number,
-        readonly password: string,
-        readonly home: number
+      public id: number,
+      public name: string,
+      public lastName: string,
+      public mail: string,
+      public password: string,
+      public phone: string,
+      public home: string
     ) {}
-}
+  }
+  

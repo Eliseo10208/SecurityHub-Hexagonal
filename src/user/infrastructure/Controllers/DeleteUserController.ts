@@ -1,31 +1,18 @@
-import { Request, Response } from "express";
-import { DeleteUserUseCase } from "../../application/MethodsUser/DeleteUserUseCase";
-
+import { Request, Response } from 'express';
+import { DeleteUserUseCase } from '../../application/MethodsUser/DeleteUserUseCase';
 
 export class DeleteUserController {
-    constructor(readonly deleteUserUseCase:DeleteUserUseCase){}
+  constructor(private deleteUserUseCase: DeleteUserUseCase) {}
 
-    async run(req: Request, res: Response):Promise<void> {
-        const id : number =parseInt(req.params. idUser)
-        try {
-            const user = await this.deleteUserUseCase.run(id);
-            console.log(user);
-            if (user)
-              res.status(200).send({
-                status: "success",
-      
-              });
-            else
-              res.status(400).send({
-                status: "error",
-                msn: "Hubo un problema",
-              });
-          } catch (error) {
-            res.status(204).send({
-              status: "error",
-              data: "Hubo un problema",
-              msn: error,
-            });
-          }
+  async handle(req: Request, res: Response): Promise<Response> {
+    try {
+      await this.deleteUserUseCase.execute(Number(req.params.id));
+      return res.status(204).send();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(400).json({ message: error.message });
+      }
+      return res.status(400).json({ message: 'An unexpected error occurred' });
     }
+  }
 }
