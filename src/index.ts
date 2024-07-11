@@ -1,5 +1,6 @@
 import express from 'express';
 import { UserRouter } from './user/infrastructure/Routes/UserRoutes';
+import { SensorRouter } from './sensor/infrastructure/Routes/SensorRoutes';
 import { sequelize } from './database/mysql';
 import dotenv from 'dotenv';
 
@@ -24,6 +25,7 @@ sequelize.authenticate()
 
 // Rutas
 app.use('/users', UserRouter);
+app.use('/sensors', SensorRouter);
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);
