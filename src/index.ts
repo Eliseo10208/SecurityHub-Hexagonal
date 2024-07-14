@@ -2,6 +2,7 @@ import express from 'express';
 import { UserRouter } from './user/infrastructure/Routes/UserRoutes';
 import { SensorRouter } from './sensor/infrastructure/Routes/SensorRoutes';
 import { sequelize } from './database/mysql';
+
 import dotenv from 'dotenv';
 
 dotenv.config();

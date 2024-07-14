@@ -17,5 +17,6 @@ router.put('/:id', (req, res) => updateSensorController.handle(req, res));
 
 const deleteSensorController = DependenciesSensor.deleteSensorController();
 router.delete('/:id', (req, res) => deleteSensorController.handle(req, res));
-
+const uploadFileController = DependenciesSensor.uploadFileController();
+router.post('/upload', uploadFileController.uploadFile);
 export { router as SensorRouter };
