@@ -1,6 +1,6 @@
 import { SensorRepository } from '../../domain/Interface/SensorRepository';
 import { Sensor } from '../../domain/Entities/Sensor';
-import { Sensor as SensorModel } from './models/SensorModel';
+import SensorModel from './models/SensorModel';
 
 export class MysqlSensorRepository implements SensorRepository {
     async createSensor(sensor: Sensor): Promise<Sensor> {
@@ -35,24 +35,23 @@ export class MysqlSensorRepository implements SensorRepository {
     }
 
     async updateSensor(id: number, sensor: Sensor): Promise<Sensor | null> {
-        const [updateCount, updatedSensors] = await SensorModel.update({
+        const [updateCount] = await SensorModel.update({
             type: sensor.type,
             description: sensor.description
         }, {
-            where: { id },
-            returning: true
+            where: { id }
         });
-
         if (updateCount > 0) {
-            const updatedSensor = updatedSensors[0];
-            return new Sensor(
-                updatedSensor.get('type') as string,
-                updatedSensor.get('description') as string,
-                updatedSensor.get('id') as number,
-            );
+            const updatedSensor = await SensorModel.findByPk(id);
+            if (updatedSensor) {
+                return new Sensor(
+                    updatedSensor.get('type') as string,
+                    updatedSensor.get('description') as string,
+                    updatedSensor.get('id') as number
+                );
+            }
         }
-
-        return null;
+      return null;
     }
 
     async deleteSensor(id: number): Promise<void> {
