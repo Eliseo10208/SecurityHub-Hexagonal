@@ -1,4 +1,4 @@
-import { User as UserModel } from './models/UserModel';
+import UserModel  from './models/UserModel';
 import { User } from '../../domain/Entities/User';
 import { UserRepository } from '../../domain/Interface/UserRepository';
 import { EncryptionService } from '../services/EncryptionService';

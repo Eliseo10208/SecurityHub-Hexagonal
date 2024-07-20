@@ -12,19 +12,19 @@ export class UpdateSensorController {
     async handle(req: Request, res: Response): Promise<Response> {
         const { id } = req.params;
         const { type, description } = req.body;
-
-        const sensorId = Number(id);
-        if (isNaN(sensorId)) {
-            return res.status(400).json({ message: "Invalid ID format" });
-        }
-
         try {
+            const sensorId = Number(id);
+            if (isNaN(sensorId)) {
+                return res.status(400).json({ message: "Invalid ID format" });
+            }
+
             const sensor = new Sensor(type, description, sensorId);
             const updatedSensor = await this.updateSensorUseCase.execute(sensorId, sensor);
             if (updatedSensor) {
                 return res.status(200).json(updatedSensor);
+            } else {
+                return res.status(404).json({ message: 'Sensor not found' });
             }
-            return res.status(404).json({ message: 'Sensor not found' });
         } catch (error: unknown) {
             if (error instanceof Error) {
                 return res.status(400).json({ message: error.message });

@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../../../../database/mysql';
 
-export const Sensor = sequelize.define('Sensor', {
+const SensorsModel = sequelize.define('Sensors', {
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true
     },
@@ -19,3 +19,5 @@ export const Sensor = sequelize.define('Sensor', {
     tableName: 'Sensors',
     timestamps: false
 });
+
+export default SensorsModel;
