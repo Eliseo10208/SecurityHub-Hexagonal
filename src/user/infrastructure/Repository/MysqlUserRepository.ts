@@ -1,75 +1,81 @@
-import { query } from "../../../database/mysql";
-import { User } from "../../domain/Entities/User";
-import { UserRepository } from "../../domain/Interface/UserRepository";
+import { User as UserModel } from './models/UserModel';
+import { User } from '../../domain/Entities/User';
+import { UserRepository } from '../../domain/Interface/UserRepository';
+import { EncryptionService } from '../services/EncryptionService';
 
 export class MysqlUserRepository implements UserRepository {
-    async getAll(): Promise<User[] | null> {
-        const sql = "SELECT * FROM users";
-        try {
-            const [data]: any = await query(sql, []);
-            const dataUser = Object.values(JSON.parse(JSON.stringify(data)));
-            return dataUser.map(
-                (user: any) =>
-                    new User(
-                        user.idUser,
-                        user.name,
-                        user.lastName,
-                        user.mail,
-                        user.phone,
-                        user.password,
-                        user.home
-                    )
-            );
-        } catch (error) {
-            return null;
-        }
-    }
+  async createUser(user: User): Promise<User> {
+    const newUser = await UserModel.create({
+      name: user.name,
+      lastName: user.lastName,
+      mail: user.mail,
+      password: user.password,
+      phone: user.phone,
+      home: user.home
+    });
 
-    async createUser(
-        idUser: number,
-        name: string,
-        lastName: string,
-        mail: string,
-        phone: number,
-        password: string,
-        home: number
-    ): Promise<User | null> {
-        const sql =
-            "INSERT INTO users (`idUser`, `name`, `lastName`, `mail`, `phone`, `password`, `home`) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        const params: any[] = [
-            idUser,
-            name,
-            lastName,
-            mail,
-            phone,
-            password,
-            home,
-        ];
-        try {
-            const [result]: any = await query(sql, params);
+    return new User(
+      newUser.get('id') as number,
+      newUser.get('name') as string,
+      newUser.get('lastName') as string,
+      newUser.get('mail') as string,
+      newUser.get('password') as string,
+      newUser.get('phone') as string,
+      newUser.get('home') as string
+    );
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    await UserModel.destroy({
+      where: { id }
+    });
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    const users = await UserModel.findAll();
+    return users.map(user => new User(
+      user.get('id') as number,
+      user.get('name') as string,
+      user.get('lastName') as string,
+      user.get('mail') as string,
+      user.get('password') as string,
+      user.get('phone') as string,
+      user.get('home') as string
+    ));
+  }
+
+  async authenticateUser(email: string, password: string): Promise<User | null> {
+    const user = await UserModel.findOne({ where: { mail: email } });
+    if (user) {
+        const hashedPassword = user.get('password') as string;  // Uso de get() con casting de tipo
+        const passwordIsValid = await EncryptionService.comparePasswords(password, hashedPassword);
+        if (passwordIsValid) {
             return new User(
-                idUser,
-                name,
-                lastName,
-                mail,
-                phone,
-                password,
-                home
+                user.get('id') as number,
+                user.get('name') as string,
+                user.get('lastName') as string,
+                user.get('mail') as string,
+                user.get('password') as string,
+                user.get('phone') as string,
+                user.get('home') as string
             );
-        } catch (error) {
-            return null;
         }
     }
+    return null;
+}
 
-    async deleteUser(idUser: number): Promise<User | null> {
-        const sql = "DELETE FROM users WHERE idUser = ?";
-        const params: any[] = [idUser];
-        try {
-            const [result]: any = await query(sql, params);
+  async getUserById(id: number): Promise<User | null> {
+    const user = await UserModel.findByPk(id);
+    if (!user) return null;
 
-            return result;
-        } catch (error) {
-            return null;
-        }
-    }
+    return new User(
+      user.get('id') as number,
+      user.get('name') as string,
+      user.get('lastName') as string,
+      user.get('mail') as string,
+      user.get('password') as string,
+      user.get('phone') as string,
+      user.get('home') as string
+    );
+  }
 }

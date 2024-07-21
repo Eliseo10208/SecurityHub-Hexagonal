@@ -1,24 +1,39 @@
-import express from "express";
-import morgan from "morgan";
-import {Signale} from "signale";
-import * as dotenv from "dotenv";
-//---------------------------------------
+import express from 'express';
+import { UserRouter } from './user/infrastructure/Routes/UserRoutes';
+import { SensorRouter } from './sensor/infrastructure/Routes/SensorRoutes';
+import { sequelize } from './database/mysql';
 
-import { userRouter } from "./user/infrastructure/Routes/UserRouter";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-dotenv.config();
-app.use(morgan("dev"));
-app.use(express.json())
-app.use("/users",userRouter)
+const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
 
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+    // Sincronizar modelos con la base de datos, comentar en producción
+    //sequelize.sync({ force: true }).then(() => {
+     // console.log('Database synced');
+   // });
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
-const port: string | undefined = process.env.PORT ?? "3000";
+// Rutas
+app.use('/users', UserRouter);
+app.use('/sensors', SensorRouter);
 
-const signale = new Signale();
-
-app.listen(port,()=>{
-    signale.success("Servidor escuchando en el puerto:", port);
-
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+

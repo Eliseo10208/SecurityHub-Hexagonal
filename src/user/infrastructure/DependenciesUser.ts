@@ -1,30 +1,40 @@
-import { CreateUserUseCase } from "../application/MethodsUser/CreateUserUseCase";
-import { GetAllUserUserUseCase } from "../application/MethodsUser/GetAllUserUseCase";
-import { DeleteUserUseCase } from "../application/MethodsUser/DeleteUserUseCase";
-//----------------------------
-import { GetAllUserController } from "./Controllers/GetAllUserController";
-import { CreateUserController } from "./Controllers/CreateUserController";
-import { DeleteUserController } from "./Controllers/DeleteUserController";
-import { MysqlUserRepository } from "./Repository/MysqlUserRepository";
-//----------------------------
+import { MysqlUserRepository } from './Repository/MysqlUserRepository';
+import { CreateUserUseCase } from '../application/MethodsUser/CreateUserUseCase';
+import { DeleteUserUseCase } from '../application/MethodsUser/DeleteUserUseCase';
+import { GetAllUserUseCase } from '../application/MethodsUser/GetAllUserUseCase';
+import { GetUserUseCase } from '../application/MethodsUser/GetUserUseCase';
+import { AuthUserCase } from '../application/MethodsUser/AuthUserCase';
+import { CreateUserController } from './Controllers/CreateUserController';
+import { DeleteUserController } from './Controllers/DeleteUserController';
+import { GetAllUserController } from './Controllers/GetAllUserController';
+import { GetUserController } from './Controllers/GetUserController';
+import { AuthUserCaseController } from './Controllers/AuthUserCaseController';
 
+export class DependenciesUser {
+  static userRepository = new MysqlUserRepository();
 
-export const mysqlUserRepository = new MysqlUserRepository();
-export const createUserUseCase = new CreateUserUseCase(
-    mysqlUserRepository
-)
-export const getAllUserCase = new GetAllUserUserUseCase(mysqlUserRepository );
+  static createUserController() {
+    const createUserUseCase = new CreateUserUseCase(this.userRepository);
+    return new CreateUserController(createUserUseCase);
+  }
 
-export const createUserController = new CreateUserController(
-    createUserUseCase
-  );
-  
-  export const getAllUserController = new GetAllUserController(
-    getAllUserCase
-  );
-  export const deleteUserUseCase = new DeleteUserUseCase(
-    mysqlUserRepository
-  )
-  export const deleteUserController = new DeleteUserController (
-    deleteUserUseCase
-  )
+  static deleteUserController() {
+    const deleteUserUseCase = new DeleteUserUseCase(this.userRepository);
+    return new DeleteUserController(deleteUserUseCase);
+  }
+
+  static getAllUserController() {
+    const getAllUserUseCase = new GetAllUserUseCase(this.userRepository);
+    return new GetAllUserController(getAllUserUseCase);
+  }
+
+  static getUserController() {
+    const getUserUseCase = new GetUserUseCase(this.userRepository);
+    return new GetUserController(getUserUseCase);
+  }
+
+  static authUserCaseController() {
+    const authUserCase = new AuthUserCase(this.userRepository);
+    return new AuthUserCaseController(authUserCase);
+  }
+}
