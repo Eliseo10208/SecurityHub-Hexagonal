@@ -1,6 +1,9 @@
 import express from 'express';
 import { UserRouter } from './user/infrastructure/Routes/UserRoutes';
 import { SensorRouter } from './sensor/infrastructure/Routes/SensorRoutes';
+import { SensorDataRouter } from './sensor/SensorData/infrastructure/Routes/SensorDataRoutes'; 
+import userSensorsRoutes from './UserSensors/infrastructure/Routes/UserSensorsRoutes';
+
 import { sequelize } from './database/mysql';
 
 import dotenv from 'dotenv';
@@ -12,21 +15,12 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-    // Sincronizar modelos con la base de datos, comentar en producción
-    //sequelize.sync({ force: true }).then(() => {
-     // console.log('Database synced');
-   // });
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-
 // Rutas
 app.use('/users', UserRouter);
 app.use('/sensors', SensorRouter);
+app.use('/sensor-data', SensorDataRouter);
+app.use('/user-sensors', userSensorsRoutes);
+
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.error(err.stack);

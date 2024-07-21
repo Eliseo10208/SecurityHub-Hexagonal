@@ -1,5 +1,5 @@
-import { Sensor } from '../../domain/Entities/Sensor';
 import { SensorRepository } from '../../domain/Interface/SensorRepository';
+import { Sensor } from '../../domain/Entities/Sensor';
 
 export class UpdateSensorUseCase {
     private sensorRepository: SensorRepository;
@@ -9,6 +9,7 @@ export class UpdateSensorUseCase {
     }
 
     async execute(id: number, sensor: Sensor): Promise<Sensor | null> {
-        return this.sensorRepository.updateSensor(id, sensor);
+        const updatedSensor = await this.sensorRepository.updateSensor(id, sensor);
+        return updatedSensor;
     }
 }
