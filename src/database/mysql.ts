@@ -36,7 +36,7 @@ sequelize.authenticate()
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
     
     // Sincronizar modelos con la base de datos, comentado en producción
-    // await sequelize.sync({ force: true });
+    //await sequelize.sync({ force: true });
 
     // Restaurar restricciones de claves foráneas
     await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');

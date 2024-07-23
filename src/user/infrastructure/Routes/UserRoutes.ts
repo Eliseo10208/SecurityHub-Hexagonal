@@ -19,6 +19,6 @@ const authUserCaseController = DependenciesUser.authUserCaseController();
 router.post('/login', (req, res) => authUserCaseController.handle(req, res));
 
 const updateUserPasswordController = DependenciesUser.updateUserPasswordController();
-router.put('/password/:id', (req, res) => updateUserPasswordController.handle(req, res)); // Nueva ruta
+router.put('/update-password/:email', (req, res) => updateUserPasswordController.handle(req, res));
 
 export { router as UserRouter };
