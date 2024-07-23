@@ -21,4 +21,7 @@ router.post('/login', (req, res) => authUserCaseController.handle(req, res));
 const updateUserPasswordController = DependenciesUser.updateUserPasswordController();
 router.put('/update-password/:email', (req, res) => updateUserPasswordController.handle(req, res));
 
+const updateUserProfileController = DependenciesUser.updateUserProfileController();
+router.put('/:id', (req, res) => updateUserProfileController.handle(req, res));
+
 export { router as UserRouter };

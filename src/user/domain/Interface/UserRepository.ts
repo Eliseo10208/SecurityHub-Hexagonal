@@ -7,4 +7,5 @@ export interface UserRepository {
   authenticateUser(email: string, password: string): Promise<User | null>;
   getUserById(id: number): Promise<User | null>;
   updateUserPassword(id: number, newPassword: string): Promise<void>;
+  updateUserProfile(id: number, updatedData: Partial<User>): Promise<void>;
 }

@@ -83,4 +83,11 @@ export class MysqlUserRepository implements UserRepository {
     const hashedPassword = await EncryptionService.hashPassword(newPassword);
     await UserModel.update({ password: hashedPassword }, { where: { id } });
 }
+
+async updateUserProfile(id: number, updatedData: Partial<User>): Promise<void> {
+  await UserModel.update(updatedData, {
+      where: { id }
+  });
+}
+
 }
