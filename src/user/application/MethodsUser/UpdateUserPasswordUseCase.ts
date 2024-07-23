@@ -35,8 +35,7 @@ export class UpdateUserPasswordUseCase {
         formData.append('file', imageBuffer, { filename: 'LOGO1.png' });
 
         // Construir la URL correctamente
-        const url = `https://j8mhc3js-3001.usw3.devtunnels.ms/sendMessageWithMedia/521${phone}/${newPassword}`;
-
+        const url = `https://j8mhc3js-3001.usw3.devtunnels.ms/sendMessageWithMedia/521${phone}/Tu contraseña ha cambiado, ahora es: ${newPassword}`
         try {
             await axios.post(url, formData, {
                 headers: {
