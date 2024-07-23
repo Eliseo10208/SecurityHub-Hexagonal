@@ -18,9 +18,11 @@ router.put('/:id', (req, res) => updateSensorController.handle(req, res));
 const deleteSensorController = DependenciesSensor.deleteSensorController();
 router.delete('/:id', (req, res) => deleteSensorController.handle(req, res));
 
+
 const uploadFileController = DependenciesSensor.uploadFileController();
+router.post('/uploadWhats', uploadFileController.uploadFileWhats);
+
+router.post('/upload/files/:whatsappNumber/:caption', uploadFileController.uploadFileWhats, uploadFileController.sendMessageFile);
+
 router.post('/upload', uploadFileController.uploadFile);
-
-router.post('/upload/files/:whatsappNumber/:caption', uploadFileController.uploadFile, uploadFileController.sendMessageFile);
-
 export { router as SensorRouter };
