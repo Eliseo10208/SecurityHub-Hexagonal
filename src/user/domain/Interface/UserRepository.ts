@@ -6,4 +6,5 @@ export interface UserRepository {
   getAllUsers(): Promise<User[]>;
   authenticateUser(email: string, password: string): Promise<User | null>;
   getUserById(id: number): Promise<User | null>;
+  updateUserPassword(id: number, newPassword: string): Promise<void>;
 }

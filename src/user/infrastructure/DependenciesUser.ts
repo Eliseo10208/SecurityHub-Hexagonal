@@ -4,11 +4,14 @@ import { DeleteUserUseCase } from '../application/MethodsUser/DeleteUserUseCase'
 import { GetAllUserUseCase } from '../application/MethodsUser/GetAllUserUseCase';
 import { GetUserUseCase } from '../application/MethodsUser/GetUserUseCase';
 import { AuthUserCase } from '../application/MethodsUser/AuthUserCase';
+import { UpdateUserPasswordUseCase } from '../application/MethodsUser/UpdateUserPasswordUseCase';
+
 import { CreateUserController } from './Controllers/CreateUserController';
 import { DeleteUserController } from './Controllers/DeleteUserController';
 import { GetAllUserController } from './Controllers/GetAllUserController';
 import { GetUserController } from './Controllers/GetUserController';
 import { AuthUserCaseController } from './Controllers/AuthUserCaseController';
+import { UpdateUserPasswordController } from './Controllers/UpdateUserPasswordController';
 
 export class DependenciesUser {
   static userRepository = new MysqlUserRepository();
@@ -36,5 +39,10 @@ export class DependenciesUser {
   static authUserCaseController() {
     const authUserCase = new AuthUserCase(this.userRepository);
     return new AuthUserCaseController(authUserCase);
+  }
+
+  static updateUserPasswordController() {
+    const updateUserPasswordUseCase = new UpdateUserPasswordUseCase(this.userRepository);
+    return new UpdateUserPasswordController(updateUserPasswordUseCase);
   }
 }
