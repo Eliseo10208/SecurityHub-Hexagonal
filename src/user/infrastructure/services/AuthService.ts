@@ -9,7 +9,8 @@ export class AuthService {
       {
         id: user.id,
         name: user.name,
-        mail: user.mail
+        mail: user.mail,
+        phone: user.phone
         // Pendiente agregar más campos del usuario
       },
       process.env.JWT_SECRET!,
@@ -17,4 +18,5 @@ export class AuthService {
     );
     return token;
   }
+
 }
