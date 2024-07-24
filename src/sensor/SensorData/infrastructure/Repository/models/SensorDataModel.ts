@@ -33,7 +33,7 @@ SensorDataModel.init({
 }, {
     sequelize,
     tableName: 'Sensor_Data',
-    timestamps: false,
+    timestamps: true,
     underscored: true
 });
 
