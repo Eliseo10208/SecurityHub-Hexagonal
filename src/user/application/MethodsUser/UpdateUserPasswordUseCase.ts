@@ -10,23 +10,30 @@ export class UpdateUserPasswordUseCase {
     constructor(private userRepository: UserRepository) {}
 
     async execute(email: string): Promise<void> {
+        console.log(`Buscando usuario con email: ${email}`);
         const users = await this.userRepository.getAllUsers();
         const user = users.find(user => user.mail === email);
         
         if (!user) {
+            console.error('User not found');
             throw new Error('User not found');
         }
 
         const newPassword = crypto.randomBytes(8).toString('hex'); // Genera una contraseña aleatoria
+        console.log(`Contraseña generada: ${newPassword}`);
+        
         const hashedPassword = await EncryptionService.hashPassword(newPassword);
+        console.log(`Contraseña hasheada: ${hashedPassword}`);
         
         await this.userRepository.updateUserPassword(user.id, hashedPassword);
+        console.log(`Contraseña actualizada para el usuario con ID: ${user.id}`);
 
         const phone = user.phone;
 
         // Lee la imagen desde la ruta especificada
         const imagePath = path.join(__dirname, '../../../../images/LOGO1.png');
         if (!fs.existsSync(imagePath)) {
+            console.error(`Image not found at ${imagePath}`);
             throw new Error(`Image not found at ${imagePath}`);
         }
         const imageBuffer = fs.readFileSync(imagePath);
@@ -35,13 +42,16 @@ export class UpdateUserPasswordUseCase {
         formData.append('file', imageBuffer, { filename: 'LOGO1.png' });
 
         // Construir la URL correctamente
-        const url = `https://j8mhc3js-3001.usw3.devtunnels.ms/sendMessageWithMedia/521${phone}/Tu contraseña ha cambiado, ahora es: ${newPassword}`
+        const url = `https://j8mhc3js-3001.usw3.devtunnels.ms/sendMessageWithMedia/521${phone}/Tu contraseña ha cambiado, ahora es: ${newPassword}`;
+        console.log(`URL construida: ${url}`);
+
         try {
             await axios.post(url, formData, {
                 headers: {
                     ...formData.getHeaders()
                 }
             });
+            console.log('Mensaje enviado exitosamente');
         } catch (error: unknown) {
             if (error instanceof Error) {
                 console.error("Error sending message:", error.message);
