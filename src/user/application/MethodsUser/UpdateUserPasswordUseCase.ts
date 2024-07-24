@@ -1,7 +1,6 @@
 import { UserRepository } from '../../domain/Interface/UserRepository';
 import { EncryptionService } from '../../infrastructure/services/EncryptionService';
 import axios from 'axios';
-import * as crypto from 'crypto';
 import * as fs from 'fs';
 import FormData from 'form-data';
 import path from 'path';
@@ -15,11 +14,10 @@ export class UpdateUserPasswordUseCase {
         const user = users.find(user => user.mail === email);
         
         if (!user) {
-            console.error('User not found');
             throw new Error('User not found');
         }
 
-        const newPassword = crypto.randomBytes(8).toString('hex'); // Genera una contraseña aleatoria
+        const newPassword = this.generateRandomPassword(8); // Genera una contraseña aleatoria de 8 caracteres
         console.log(`Contraseña generada: ${newPassword}`);
         
         const hashedPassword = await EncryptionService.hashPassword(newPassword);
@@ -33,7 +31,6 @@ export class UpdateUserPasswordUseCase {
         // Lee la imagen desde la ruta especificada
         const imagePath = path.join(__dirname, '../../../../images/LOGO1.png');
         if (!fs.existsSync(imagePath)) {
-            console.error(`Image not found at ${imagePath}`);
             throw new Error(`Image not found at ${imagePath}`);
         }
         const imageBuffer = fs.readFileSync(imagePath);
@@ -42,7 +39,7 @@ export class UpdateUserPasswordUseCase {
         formData.append('file', imageBuffer, { filename: 'LOGO1.png' });
 
         // Construir la URL correctamente
-        const url = `https://j8mhc3js-3001.usw3.devtunnels.ms/sendMessageWithMedia/521${phone}/Tu contraseña ha cambiado, ahora es: ${newPassword}`;
+        const url = `https://j8mhc3js-3001.usw3.devtunnels.ms/sendMessageWithMedia/521${phone}/Tu%20contraseña%20ha%20cambiado,%20ahora%20es:%20${newPassword}`;
         console.log(`URL construida: ${url}`);
 
         try {
@@ -61,5 +58,16 @@ export class UpdateUserPasswordUseCase {
                 throw new Error("An unknown error occurred");
             }
         }
+    }
+
+    private generateRandomPassword(length: number): string {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let password = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * chars.length);
+            password += chars[randomIndex];
+        }
+        console.log(`Contraseña generada dentro del método generateRandomPassword: ${password}`);
+        return password;
     }
 }
