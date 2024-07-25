@@ -9,8 +9,11 @@ export class AuthService {
       {
         id: user.id,
         name: user.name,
+        lastname: user.lastName,
         mail: user.mail,
-        phone: user.phone
+        phone: user.phone,
+        home: user.home
+
         // Pendiente agregar más campos del usuario
       },
       process.env.JWT_SECRET!,
